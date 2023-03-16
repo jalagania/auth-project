@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,
+::before,
+::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  min-height: 100vh;
+  font-family: "Inter", sans-serif;
+  font-size: 1.6rem;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+ul {
+  list-style: none;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  border: none;
+}
+
+tr {
+  border: 1px solid #f7f7f7;
+}
+
+th {
+  padding: 2rem;
+  background-color: #f7f7f7;
+}
+
+td {
+  padding: 2rem;
+}
+
+.btn {
+  padding: 1rem 2rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
