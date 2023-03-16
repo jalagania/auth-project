@@ -1,11 +1,14 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import removeIcon from "./assets/trash.svg";
 import unblockIcon from "./assets/unlock-alt.svg";
-import { data } from "./data";
 
 function AdminPanel() {
+  const { data } = useSelector((store) => store.data);
   const [allSelected, setAllSelected] = useState(false);
-  const [userSelected, setUserSelected] = useState(false);
+  const [checkboxStates, setCheckboxStates] = useState(
+    data.map((item) => false)
+  );
 
   function handleBlockUser() {
     console.log("block user!");
@@ -24,15 +27,18 @@ function AdminPanel() {
   }
 
   function handleSelectAll(event) {
-    event.target.checked ? setUserSelected(true) : setUserSelected(false);
-    setAllSelected(event.target.checked);
+    event.target.checked
+      ? setCheckboxStates(data.map((item) => true))
+      : setCheckboxStates(data.map((item) => false));
+    setAllSelected(!allSelected);
   }
 
-  function handleSelectUser(event) {
-    if (!event.target.checked) {
-      setAllSelected(false);
-    }
-    setUserSelected(event.target.checked);
+  function handleSelectUser(index) {
+    const checkboxArr = checkboxStates.map((check, i) => {
+      return index === i ? !check : check;
+    });
+    checkboxArr.includes(false) ? setAllSelected(false) : setAllSelected(true);
+    setCheckboxStates(checkboxArr);
   }
 
   return (
@@ -77,18 +83,18 @@ function AdminPanel() {
             </tr>
           </thead>
           <tbody>
-            {data.map((user) => {
+            {data.map((user, index) => {
               return (
                 <tr key={user.id}>
                   <td>
                     <input
                       type="checkbox"
-                      checked={userSelected}
-                      onChange={handleSelectUser}
+                      checked={checkboxStates[index]}
+                      onChange={() => handleSelectUser(index)}
                     />
                   </td>
                   <td>{user.id}</td>
-                  <td>{user.name}</td>
+                  <td>{user.userName}</td>
                   <td>{user.email}</td>
                   <td>{user.lastLogin}</td>
                   <td>{user.registered}</td>
