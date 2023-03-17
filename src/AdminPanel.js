@@ -1,45 +1,53 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import removeIcon from "./assets/trash.svg";
 import unblockIcon from "./assets/unlock-alt.svg";
+import { dataSlice } from "./store/dataSlice";
 
 function AdminPanel() {
+  const dispatch = useDispatch();
   const { data } = useSelector((store) => store.data);
+  const { selectUser, selectAll, blockUser, unblockUser, deleteUser } =
+    dataSlice.actions;
+
   const [allSelected, setAllSelected] = useState(false);
-  const [checkboxStates, setCheckboxStates] = useState(
-    data.map((item) => false)
-  );
 
   function handleBlockUser() {
-    console.log("block user!");
-  }
-
-  function handleDeleteUser() {
-    console.log("Delete user!");
+    dispatch(blockUser());
+    dispatch(selectAll(false));
   }
 
   function handleUnblockUser() {
-    console.log("Unblock user!");
+    dispatch(unblockUser());
+    dispatch(selectAll(false));
+  }
+
+  function handleDeleteUser() {
+    dispatch(deleteUser());
+    dispatch(selectAll(false));
   }
 
   function handleLogout() {
-    console.log("Logout!");
+    dispatch(selectAll(false));
   }
 
   function handleSelectAll(event) {
-    event.target.checked
-      ? setCheckboxStates(data.map((item) => true))
-      : setCheckboxStates(data.map((item) => false));
+    dispatch(selectAll(event.target.checked));
     setAllSelected(!allSelected);
   }
 
-  function handleSelectUser(index) {
-    const checkboxArr = checkboxStates.map((check, i) => {
-      return index === i ? !check : check;
-    });
-    checkboxArr.includes(false) ? setAllSelected(false) : setAllSelected(true);
-    setCheckboxStates(checkboxArr);
+  function handleSelectUser(id) {
+    dispatch(selectUser(id));
   }
+
+  useEffect(() => {
+    data.map((user) => user.selected).includes(false)
+      ? setAllSelected(false)
+      : setAllSelected(true);
+    if (data.length === 0) {
+      setAllSelected(false);
+    }
+  }, [data]);
 
   return (
     <div>
@@ -57,10 +65,10 @@ function AdminPanel() {
           <img src={removeIcon} alt="trash" />
         </button>
         <button
-          className="btn text-white bg-blue-700 ml-auto rounded-lg"
+          className="btn text-white bg-blue-600 ml-auto rounded-lg"
           onClick={handleLogout}
         >
-          Logout
+          Log out
         </button>
       </header>
       <main className="mt-12 px-8">
@@ -89,8 +97,8 @@ function AdminPanel() {
                   <td>
                     <input
                       type="checkbox"
-                      checked={checkboxStates[index]}
-                      onChange={() => handleSelectUser(index)}
+                      checked={user.selected}
+                      onChange={() => handleSelectUser(user.id)}
                     />
                   </td>
                   <td>{user.id}</td>

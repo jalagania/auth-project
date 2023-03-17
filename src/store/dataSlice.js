@@ -7,10 +7,33 @@ export const dataSlice = createSlice({
     data: data,
   },
   reducers: {
-    blockUser: () => {},
+    selectAll: (state, action) => {
+      state.data.forEach((user) => (user.selected = action.payload));
+    },
 
-    unblockUser: () => {},
+    selectUser: (state, action) => {
+      const index = state.data.findIndex((user) => user.id === action.payload);
+      state.data[index].selected = !state.data[index].selected;
+    },
 
-    deleteUser: () => {},
+    blockUser: (state) => {
+      state.data.forEach((user) => {
+        if (user.selected === true) {
+          user.blocked = true;
+        }
+      });
+    },
+
+    unblockUser: (state) => {
+      state.data.forEach((user) => {
+        if (user.selected === true) {
+          user.blocked = false;
+        }
+      });
+    },
+
+    deleteUser: (state) => {
+      state.data = state.data.filter((user) => user.selected !== true);
+    },
   },
 });

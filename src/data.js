@@ -1,13 +1,15 @@
 export const data = [
   {
+    selected: false,
     id: 1888,
     userName: "herbivore",
     email: "herbivore@gmail.com",
-    lastLogin: "15: 10 16.03.2023",
+    lastLogin: "15:10 16.03.2023",
     registered: "10: 32 12.03.2023",
     blocked: false,
   },
   {
+    selected: false,
     id: 3479,
     userName: "sisinho",
     email: "siso@gmail.com",
@@ -16,6 +18,7 @@ export const data = [
     blocked: false,
   },
   {
+    selected: false,
     id: 6139,
     userName: "gnomiki",
     email: "gnomi@gmail.com",
