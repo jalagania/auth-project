@@ -2,13 +2,17 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import removeIcon from "./assets/trash.svg";
 import unblockIcon from "./assets/unlock-alt.svg";
+import { adminPanelSlice } from "./store/adminPanelSlice";
 import { dataSlice } from "./store/dataSlice";
+import { formSlice } from "./store/formSlice";
 
 function AdminPanel() {
   const dispatch = useDispatch();
   const { data } = useSelector((store) => store.data);
   const { selectUser, selectAll, blockUser, unblockUser, deleteUser } =
     dataSlice.actions;
+  const { setFormIsVisible } = formSlice.actions;
+  const { setPanelIsVisible } = adminPanelSlice.actions;
 
   const [allSelected, setAllSelected] = useState(false);
 
@@ -28,6 +32,8 @@ function AdminPanel() {
   }
 
   function handleLogout() {
+    dispatch(setPanelIsVisible(false));
+    dispatch(setFormIsVisible(true));
     dispatch(selectAll(false));
   }
 
@@ -51,9 +57,9 @@ function AdminPanel() {
 
   return (
     <div>
-      <header className="flex gap-20 py-8 bg-[#f0f8ff] items-center px-8">
+      <header className="flex items-center gap-20 bg-[#f0f8ff] py-8 px-8">
         <button
-          className="btn bg-red-600 rounded-lg text-white"
+          className="btn rounded-lg bg-red-600 text-white"
           onClick={handleBlockUser}
         >
           Block
@@ -65,7 +71,7 @@ function AdminPanel() {
           <img src={removeIcon} alt="trash" />
         </button>
         <button
-          className="btn text-white bg-blue-600 ml-auto rounded-lg"
+          className="btn ml-auto rounded-lg bg-blue-600 text-white"
           onClick={handleLogout}
         >
           Log out
