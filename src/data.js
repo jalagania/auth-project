@@ -5,7 +5,7 @@ export const data = [
     username: "herbivore",
     email: "herbivore@gmail.com",
     lastLogin: "15:10 16.03.2023",
-    registered: "10: 32 12.03.2023",
+    registered: "10:32 12.03.2023",
     blocked: false,
   },
   {
