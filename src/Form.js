@@ -40,15 +40,17 @@ function Form() {
         blocked: false,
       };
       console.log(user);
+      setSignup(false);
     } else {
       const user = {
         email: userInfo.email,
         password: userInfo.password,
+        lastLogin: dayjs().format("ddd, DD MMM YYYY HH:mm:ss"),
       };
       console.log(user);
+      dispatch(setFormIsVisible(false));
+      dispatch(setPanelIsVisible(true));
     }
-    dispatch(setFormIsVisible(false));
-    dispatch(setPanelIsVisible(true));
   }
 
   function handleSwitchButton() {
@@ -97,11 +99,11 @@ function Form() {
             {signup ? "Register" : "Log in"}
           </button>
         </div>
-        <div className="mt-10 flex items-center justify-evenly">
+        <div className="mt-10 flex items-center justify-center gap-4">
           <p className="">{signup ? "Already" : "Don't"} have an account?</p>
           <button
             type="button"
-            className="btn rounded-lg border-2 border-solid  border-blue-500 text-blue-500"
+            className="font-medium text-blue-500 hover:underline"
             onClick={handleSwitchButton}
           >
             {signup ? "Log in" : "Register"}
