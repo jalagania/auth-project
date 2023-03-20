@@ -1,12 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { data } from "../data";
 
 export const dataSlice = createSlice({
-  name: data,
+  name: "data",
   initialState: {
-    data: data,
+    data: [],
+    currentUser: "",
   },
   reducers: {
+    setData: (state, action) => {
+      state.data = action.payload;
+    },
+
+    setCurrentUser: (state, action) => {
+      state.currentUser = action.payload;
+    },
+
     selectAll: (state, action) => {
       state.data.forEach((user) => (user.selected = action.payload));
     },

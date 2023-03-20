@@ -1,15 +1,21 @@
 import { useState } from "react";
 import dayjs from "dayjs";
 import { useDispatch } from "react-redux";
-import { formSlice } from "./store/formSlice";
-import { adminPanelSlice } from "./store/adminPanelSlice";
+import { formSlice } from "../store/formSlice";
+import { adminPanelSlice } from "../store/adminPanelSlice";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { dataSlice } from "../store/dataSlice";
 
 function Form() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { setData, setCurrentUser } = dataSlice.actions;
   const { setFormIsVisible } = formSlice.actions;
   const { setPanelIsVisible } = adminPanelSlice.actions;
 
   const [signup, setSignup] = useState(true);
+  const [message, setMessage] = useState(["", ""]);
   const [userInfo, setUserInfo] = useState({
     username: "",
     email: "",
@@ -25,10 +31,9 @@ function Form() {
     });
   }
 
-  function handleFormSubmit() {
+  async function handleFormSubmit() {
     if (signup) {
       const user = {
-        selected: false,
         id: Math.ceil(Math.random() * 9999)
           .toString()
           .padStart(4, 0),
@@ -36,21 +41,38 @@ function Form() {
         email: userInfo.email,
         password: userInfo.password,
         lastLogin: dayjs().format("ddd, DD MMM YYYY HH:mm:ss"),
-        registered: dayjs().format("ddd, DD MMM YYYY HH:mm:ss"),
+        registeredAt: dayjs().format("ddd, DD MMM YYYY HH:mm:ss"),
         blocked: false,
       };
-      console.log(user);
-      setSignup(false);
+      if (
+        Object.values(user)
+          .map((e) => (e + "").trim())
+          .includes("")
+      ) {
+        setMessage(["All fields are required", "red"]);
+      } else {
+        await axios.post("http://localhost:8800/", user);
+        setSignup(false);
+        setMessage(["You have been registered", "green"]);
+      }
     } else {
       const user = {
         email: userInfo.email,
         password: userInfo.password,
         lastLogin: dayjs().format("ddd, DD MMM YYYY HH:mm:ss"),
       };
-      console.log(user);
-      dispatch(setFormIsVisible(false));
-      dispatch(setPanelIsVisible(true));
+      const res = await axios.get("http://localhost:8800/");
+      dispatch(setData(res.data));
+      dispatch(
+        setCurrentUser(
+          res.data.filter((el) => el.email === user.email)[0].username
+        )
+      );
+      setMessage(["", ""]);
+      navigate("/admin-panel");
     }
+    // dispatch(setFormIsVisible(false));
+    // dispatch(setPanelIsVisible(true));
   }
 
   function handleSwitchButton() {
@@ -59,12 +81,17 @@ function Form() {
 
   return (
     <div className="mt-40 flex items-center justify-center">
-      <form
-        action=""
-        className="w-[40rem]"
-        onSubmit={(e) => e.preventDefault()}
-      >
+      <form className="w-[40rem]" onSubmit={(e) => e.preventDefault()}>
         <div className="flex flex-col gap-8">
+          {message && (
+            <p
+              className={`text-center font-medium ${
+                message[1] === "red" ? "text-red-600" : "text-green-600"
+              }`}
+            >
+              {message[0]}
+            </p>
+          )}
           {signup && (
             <input
               type="text"
@@ -103,7 +130,7 @@ function Form() {
           <p className="">{signup ? "Already" : "Don't"} have an account?</p>
           <button
             type="button"
-            className="font-medium text-blue-500 hover:underline"
+            className="font-medium text-blue-500"
             onClick={handleSwitchButton}
           >
             {signup ? "Log in" : "Register"}
