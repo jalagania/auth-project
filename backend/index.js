@@ -23,22 +23,42 @@ app.get("/", (req, res) => {
 });
 
 app.post("/", (req, res) => {
-  const q =
-    "INSERT INTO users (`id`,`username`,`email`,`password`,`lastLogin`,`registeredAt`,`blocked`) VALUES (?)";
-  const values = [
-    req.body.id,
-    req.body.username,
-    req.body.email,
-    req.body.password,
-    req.body.lastLogin,
-    req.body.registeredAt,
-    req.body.blocked,
-  ];
+  if (req.body.username) {
+    const q = "SELECT * FROM users WHERE email = ? OR username = ?";
 
-  db.query(q, [values], (err, data) => {
-    if (err) return res.send(err);
-    return res.json(data);
-  });
+    db.query(q, [req.body.email, req.body.username], (err, data) => {
+      if (err) return res.status(500).json(err);
+      if (data.length)
+        return res.status(409).json("Username and/or email is already taken!");
+
+      const q =
+        "INSERT INTO users (`id`,`username`,`email`,`password`,`lastLogin`,`registeredAt`,`blocked`) VALUES (?)";
+      const values = [
+        req.body.id,
+        req.body.username,
+        req.body.email,
+        req.body.password,
+        req.body.lastLogin,
+        req.body.registeredAt,
+        req.body.blocked,
+      ];
+
+      db.query(q, [values], (err, data) => {
+        if (err) return res.send(err);
+        return res.json(data);
+      });
+    });
+  } else {
+    const q = "SELECT * FROM users WHERE email = ? AND password = ?";
+
+    db.query(q, [req.body.email, req.body.password], (err, data) => {
+      if (err) return res.status(500).json(err);
+      if (data.length === 0) {
+        return res.status(400).json("Wrong username or password!");
+      }
+      return res.json(data);
+    });
+  }
 });
 
 app.put("/:id", (req, res) => {

@@ -51,9 +51,13 @@ function Form() {
       ) {
         setMessage(["All fields are required", "red"]);
       } else {
-        await axios.post("http://localhost:8800/", user);
-        setSignup(false);
-        setMessage(["You have been registered", "green"]);
+        try {
+          await axios.post("http://localhost:8800/", user);
+          setSignup(false);
+          setMessage(["You have been registered", "green"]);
+        } catch (error) {
+          setMessage([error.response.data, "red"]);
+        }
       }
     } else {
       const user = {
@@ -61,13 +65,18 @@ function Form() {
         password: userInfo.password,
         lastLogin: dayjs().format("ddd, DD MMM YYYY HH:mm:ss"),
       };
-      const res = await axios.get("http://localhost:8800/");
-      dispatch(setData(res.data));
-      const currentUser = res.data.filter((el) => el.email === user.email)[0]
-        .username;
-      window.sessionStorage.setItem("currentUser", currentUser);
-      setMessage(["", ""]);
-      navigate("/admin-panel");
+      try {
+        await axios.post("http://localhost:8800/", user);
+        const res = await axios.get("http://localhost:8800/");
+        dispatch(setData(res.data));
+        const currentUser = res.data.filter((el) => el.email === user.email)[0]
+          .username;
+        window.sessionStorage.setItem("currentUser", currentUser);
+        setMessage(["", ""]);
+        navigate("/admin-panel");
+      } catch (error) {
+        setMessage([error.response.data, "red"]);
+      }
     }
     // dispatch(setFormIsVisible(false));
     // dispatch(setPanelIsVisible(true));
