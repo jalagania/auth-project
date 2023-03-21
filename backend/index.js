@@ -1,17 +1,15 @@
 import express from "express";
 import mysql from "mysql2";
 import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "herbivore88",
-  database: "login_db",
-});
+const db = mysql.createPool(process.env.DATABASE_URL);
+db.end();
 
 app.get("/", (req, res) => {
   const q = "SELECT * FROM users";
