@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 const db = mysql.createPool(process.env.DATABASE_URL);
-db.end();
+// db.end();
 
 app.get("/", (req, res) => {
   const q = "SELECT * FROM users";
