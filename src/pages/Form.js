@@ -1,8 +1,6 @@
 import { useState } from "react";
 import dayjs from "dayjs";
 import { useDispatch } from "react-redux";
-import { formSlice } from "../store/formSlice";
-import { adminPanelSlice } from "../store/adminPanelSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { dataSlice } from "../store/dataSlice";
@@ -11,8 +9,6 @@ function Form() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { setData } = dataSlice.actions;
-  const { setFormIsVisible } = formSlice.actions;
-  const { setPanelIsVisible } = adminPanelSlice.actions;
 
   const [signup, setSignup] = useState(true);
   const [message, setMessage] = useState(["", ""]);
@@ -78,8 +74,6 @@ function Form() {
         setMessage([error.response.data, "red"]);
       }
     }
-    // dispatch(setFormIsVisible(false));
-    // dispatch(setPanelIsVisible(true));
   }
 
   function handleSwitchButton() {

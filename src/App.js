@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import AdminPanel from "./pages/AdminPanel";
 import Form from "./pages/Form";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -9,8 +9,6 @@ import ProtectedRoute from "./pages/ProtectedRoute";
 
 function App() {
   const dispatch = useDispatch();
-  // const { formIsVisible } = useSelector((store) => store.form);
-  // const { panelIsVisible } = useSelector((store) => store.panel);
   const { setData } = dataSlice.actions;
 
   useEffect(() => {
@@ -19,6 +17,7 @@ function App() {
       dispatch(setData(res.data));
     }
     fetchUsersData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -2,9 +2,7 @@ import removeIcon from "../assets/trash.svg";
 import unblockIcon from "../assets/unlock-alt.svg";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { adminPanelSlice } from "../store/adminPanelSlice";
 import { dataSlice } from "../store/dataSlice";
-import { formSlice } from "../store/formSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -12,10 +10,7 @@ function AdminPanel() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { data } = useSelector((store) => store.data);
-  const { setData, selectAll, blockUser, unblockUser, deleteUser } =
-    dataSlice.actions;
-  const { setFormIsVisible } = formSlice.actions;
-  const { setPanelIsVisible } = adminPanelSlice.actions;
+  const { setData } = dataSlice.actions;
 
   const [allSelected, setAllSelected] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -23,8 +18,6 @@ function AdminPanel() {
   const [currentUser, setCurrentUser] = useState("");
 
   async function handleBlockUser() {
-    // dispatch(blockUser());
-    // dispatch(selectAll(false));
     if (selectedUsers.length > 0) {
       await axios.put(`http://localhost:8800/${selectedUsers}`, {
         blocked: true,
@@ -39,8 +32,6 @@ function AdminPanel() {
   }
 
   async function handleUnblockUser() {
-    // dispatch(unblockUser());
-    // dispatch(selectAll(false));
     if (selectedUsers.length > 0) {
       await axios.put(`http://localhost:8800/${selectedUsers}`, {
         blocked: false,
@@ -50,8 +41,6 @@ function AdminPanel() {
   }
 
   async function handleDeleteUser() {
-    // dispatch(deleteUser());
-    // dispatch(selectAll(false));
     if (selectedUsers.length > 0) {
       await axios.delete(`http://localhost:8800/${selectedUsers}`);
       const id = data.filter((user) => user.username === currentUser)[0].id;
@@ -64,16 +53,12 @@ function AdminPanel() {
   }
 
   function handleLogout() {
-    // dispatch(setPanelIsVisible(false));
-    // dispatch(setFormIsVisible(true));
-    // dispatch(selectAll(false));
     setSelectedUsers([]);
     navigate("/");
     window.sessionStorage.removeItem("currentUser");
   }
 
   function handleSelectAll(event) {
-    // dispatch(selectAll(event.target.checked));
     setAllSelected(!allSelected);
     if (event.target.checked) {
       setSelectedUsers(data.map((user) => user.id));
@@ -83,8 +68,6 @@ function AdminPanel() {
   }
 
   function handleSelectUser(id) {
-    // dispatch(selectUser(id));
-
     if (selectedUsers.includes(id)) {
       setSelectedUsers(selectedUsers.filter((userID) => userID !== id));
     } else {

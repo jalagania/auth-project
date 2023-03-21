@@ -90,6 +90,4 @@ app.delete("/:id", (req, res) => {
   });
 });
 
-app.listen(8800, () => {
-  console.log("this is backend speaking!");
-});
+app.listen(8800, () => {});
