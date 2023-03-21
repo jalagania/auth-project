@@ -29,6 +29,11 @@ function AdminPanel() {
       await axios.put(`http://localhost:8800/${selectedUsers}`, {
         blocked: true,
       });
+      const id = data.filter((user) => user.username === currentUser)[0].id;
+      if (selectedUsers.includes(id)) {
+        navigate("/");
+        window.sessionStorage.removeItem("currentUser");
+      }
       setSelectedUsers([]);
     }
   }
@@ -49,6 +54,11 @@ function AdminPanel() {
     // dispatch(selectAll(false));
     if (selectedUsers.length > 0) {
       await axios.delete(`http://localhost:8800/${selectedUsers}`);
+      const id = data.filter((user) => user.username === currentUser)[0].id;
+      if (selectedUsers.includes(id)) {
+        navigate("/");
+        window.sessionStorage.removeItem("currentUser");
+      }
       setSelectedUsers([]);
     }
   }

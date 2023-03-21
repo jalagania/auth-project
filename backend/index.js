@@ -49,14 +49,20 @@ app.post("/", (req, res) => {
       });
     });
   } else {
-    const q = "SELECT * FROM users WHERE email = ? AND password = ?";
+    const q =
+      "SELECT * FROM users WHERE email = ? AND password = ? AND blocked = 0";
 
     db.query(q, [req.body.email, req.body.password], (err, data) => {
       if (err) return res.status(500).json(err);
       if (data.length === 0) {
-        return res.status(400).json("Wrong username or password!");
+        return res.status(400).json("Wrong username/password or blocked user");
       }
-      return res.json(data);
+
+      const q = "UPDATE users SET lastLogin = ? WHERE email = ?";
+      db.query(q, [req.body.lastLogin, req.body.email], (err, data) => {
+        if (err) return res.send(err);
+        return res.json(data);
+      });
     });
   }
 });
@@ -64,7 +70,7 @@ app.post("/", (req, res) => {
 app.put("/:id", (req, res) => {
   const usersId = req.params.id;
   const ids = usersId.split(",");
-  const q = "UPDATE users SET `blocked`= ? WHERE id IN (?)";
+  const q = "UPDATE users SET blocked= ? WHERE id IN (?)";
   const value = [req.body.blocked];
 
   db.query(q, [value, ids], (err, data) => {
