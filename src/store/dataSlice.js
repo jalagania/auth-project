@@ -4,15 +4,10 @@ export const dataSlice = createSlice({
   name: "data",
   initialState: {
     data: [],
-    currentUser: "",
   },
   reducers: {
     setData: (state, action) => {
       state.data = action.payload;
-    },
-
-    setCurrentUser: (state, action) => {
-      state.currentUser = action.payload;
     },
 
     selectAll: (state, action) => {

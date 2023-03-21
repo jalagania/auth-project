@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import { dataSlice } from "./store/dataSlice";
+import ProtectedRoute from "./pages/ProtectedRoute";
 
 function App() {
   const dispatch = useDispatch();
@@ -25,7 +26,14 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Form />} />
-          <Route path="/admin-panel" element={<AdminPanel />} />
+          <Route
+            path="/admin-panel"
+            element={
+              <ProtectedRoute>
+                <AdminPanel />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </div>

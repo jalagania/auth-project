@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 function AdminPanel() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { data, currentUser } = useSelector((store) => store.data);
+  const { data } = useSelector((store) => store.data);
   const { setData, selectAll, blockUser, unblockUser, deleteUser } =
     dataSlice.actions;
   const { setFormIsVisible } = formSlice.actions;
@@ -19,6 +19,8 @@ function AdminPanel() {
 
   const [allSelected, setAllSelected] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
+
+  const [currentUser, setCurrentUser] = useState("");
 
   async function handleBlockUser() {
     // dispatch(blockUser());
@@ -57,6 +59,7 @@ function AdminPanel() {
     // dispatch(selectAll(false));
     setSelectedUsers([]);
     navigate("/");
+    window.sessionStorage.removeItem("currentUser");
   }
 
   function handleSelectAll(event) {
@@ -92,6 +95,11 @@ function AdminPanel() {
     }
     updateData();
   }, [selectedUsers]);
+
+  useEffect(() => {
+    const user = window.sessionStorage.getItem("currentUser");
+    setCurrentUser(user);
+  }, []);
 
   return (
     <div>

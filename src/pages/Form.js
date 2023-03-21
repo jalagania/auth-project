@@ -10,7 +10,7 @@ import { dataSlice } from "../store/dataSlice";
 function Form() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { setData, setCurrentUser } = dataSlice.actions;
+  const { setData } = dataSlice.actions;
   const { setFormIsVisible } = formSlice.actions;
   const { setPanelIsVisible } = adminPanelSlice.actions;
 
@@ -63,11 +63,9 @@ function Form() {
       };
       const res = await axios.get("http://localhost:8800/");
       dispatch(setData(res.data));
-      dispatch(
-        setCurrentUser(
-          res.data.filter((el) => el.email === user.email)[0].username
-        )
-      );
+      const currentUser = res.data.filter((el) => el.email === user.email)[0]
+        .username;
+      window.sessionStorage.setItem("currentUser", currentUser);
       setMessage(["", ""]);
       navigate("/admin-panel");
     }
